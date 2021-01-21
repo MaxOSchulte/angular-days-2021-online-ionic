@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Plugins } from '@capacitor/core';
 import { PictureService } from 'src/app/services/picture.service';
@@ -12,9 +12,9 @@ const { LocalNotifications } = Plugins;
 @Component({
   selector: 'app-offer-details',
   templateUrl: './offer-details.page.html',
-  styleUrls: ['./offer-details.page.scss'],
+  styleUrls: [ './offer-details.page.scss' ],
 })
-export class OfferDetailsPage implements OnInit {
+export class OfferDetailsPage {
   public item: OfferItem;
   public images: PictureItem[] = [];
 
@@ -23,15 +23,17 @@ export class OfferDetailsPage implements OnInit {
     private readonly items: ItemService,
     private readonly favourites: FavouritesService,
     private readonly pictures: PictureService,
-  ) {}
+  ) {
+  }
 
-  async ngOnInit() {
+  async ionViewWillEnter() {
     const id = this.acr.snapshot.params.id;
     this.item = await this.favourites.get(Number.parseInt(id, 10));
 
     if (!this.item) {
       this.item = await this.items.get(id);
     }
+
     this.images = await this.pictures.loadOfferPictures(this.item.offerId);
     this.images.unshift({ path: this.item.image, offerId: 0 });
   }
@@ -44,7 +46,7 @@ export class OfferDetailsPage implements OnInit {
       const id = await this.pictures.savePicture($event, this.item.offerId);
       this.images.push({
         offerId: this.item.offerId,
-        id: id + '',
+        id: id,
         path: $event,
       });
     }
@@ -62,14 +64,14 @@ export class OfferDetailsPage implements OnInit {
       /*
         This error will appear if the user canceled the action of sharing.
       */
-      alert(`Couldn't share ${err}`);
+      alert(`Couldn't share ${ err }`);
     }
   }
 
   // request permissions
   async notify() {
     await LocalNotifications.requestPermission();
-    const notifs = await LocalNotifications.schedule({
+    await LocalNotifications.schedule({
       notifications: [
         {
           title: 'Some Title',

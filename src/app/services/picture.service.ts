@@ -1,8 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import { CameraResultType, Plugins } from '@capacitor/core';
 import { ToastController } from '@ionic/angular';
 import { PictureItem, PictureStore, PICTURE_STORE_TOKEN } from '../stores/picture-index-db.store';
-const { Camera } = Plugins;
 
 @Injectable({
   providedIn: 'root',
@@ -16,13 +14,7 @@ export class PictureService {
   async takePicture(): Promise<string> {
     // try to call getPhoto with dataUrl and return dataUrl
     try {
-      return (
-        await Camera.getPhoto({
-          quality: 90,
-          allowEditing: true,
-          resultType: CameraResultType.DataUrl,
-        })
-      ).dataUrl;
+      return ''; // TODO return DataUrl containing Photo / Picture data
     } catch (e) {
       // notify user on error
       const toast = await this.toasts.create({
