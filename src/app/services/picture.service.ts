@@ -1,6 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { PictureItem, PictureStore, PICTURE_STORE_TOKEN } from '../stores/picture-index-db.store';
+import { PICTURE_STORE_TOKEN, PictureItem, PictureStore } from '../stores/picture-index-db.store';
+import { CameraResultType, Plugins } from '@capacitor/core'
+
+const { Camera } = Plugins;
 
 @Injectable({
   providedIn: 'root',
@@ -9,12 +12,15 @@ export class PictureService {
   constructor(
     private readonly toasts: ToastController,
     @Inject(PICTURE_STORE_TOKEN) private readonly pictures: PictureStore,
-  ) {}
+  ) {
+  }
 
   async takePicture(): Promise<string> {
     // try to call getPhoto with dataUrl and return dataUrl
     try {
-      return ''; // TODO return DataUrl containing Photo / Picture data
+      return (await Camera.getPhoto({
+        resultType: CameraResultType.DataUrl,
+      })).dataUrl;
     } catch (e) {
       // notify user on error
       const toast = await this.toasts.create({
@@ -23,7 +29,7 @@ export class PictureService {
         color: 'warning',
         translucent: true,
       });
-      toast.present();
+      await toast.present();
     }
   }
 
