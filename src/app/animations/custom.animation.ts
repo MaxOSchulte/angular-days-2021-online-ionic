@@ -1,4 +1,5 @@
 import { AnimationController } from '@ionic/angular';
+import { NavigationOptions } from '@ionic/angular/providers/nav-controller';
 const animationCtrl = new AnimationController();
 
 // https://github.com/mhartington/v5-animations/blob/master/src/app/animations/index.ts
@@ -15,6 +16,9 @@ export const getIonPageElement = (element: HTMLElement) => {
   return element;
 };
 
+// https://github.com/ionic-team/ionic-framework/blob/e2d8e5c4dcf893ddd8aaa556c1dd8fcaf52411c9/core/src/utils/transition/index.ts#L239
+// https://github.com/ionic-team/ionic-framework/blob/e2d8e5c4dcf893ddd8aaa556c1dd8fcaf52411c9/core/src/components/nav/nav-interface.ts#L27
+// https://github.com/ionic-team/ionic-framework/blob/e2d8e5c4dcf893ddd8aaa556c1dd8fcaf52411c9/core/src/components/nav/nav-interface.ts#L41
 export interface AnimationOptions {
   mode: 'md' | 'ios';
   animated: boolean;
@@ -24,17 +28,16 @@ export interface AnimationOptions {
   baseEl: HTMLElement;
   progressAnimation: boolean;
   showGoBack: boolean;
-  animationBuilder: (_, opts) => {}
+  animationBuilder: (_, opts) => {};
   progressionCallback?: () => {};
   duration?: number;
 }
 
 export const customAnimation = (_: HTMLElement, opts: AnimationOptions) => {
-  console.log(opts);
+  console.log({ element: _, opts });
 
   // create root transition
-  const rootTransition = animationCtrl
-    .create();
+  const rootTransition = animationCtrl.create();
 
   return rootTransition;
 };
